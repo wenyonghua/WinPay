@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.GatheringCodeMapper">
+
+  <resultMap type="com.ruoyi.system.domain.GatheringCodeUsage" id="v_gathering_code_usage_resp">
+    <result property="id" column="id"/>
+    <result property="state" column="state"/>
+    <result property="fixedGatheringAmount" column="fixed_gathering_amount"/>
+    <result property="gatheringAmount" column="gathering_amount"/>
+    <result property="payee" column="payee"/>
+    <result property="inUse" column="in_use"/>
+    <result property="initiateAuditTime" column="initiate_audit_time"/>
+    <result property="auditType" column="audit_type"/>
+    <result property="createTime" column="create_time"/>
+    <result property="storageId" column="storage_id"/>
+    <result property="gatheringChannelId" column="gathering_channel_id"/>
+    <result property="gatheringChannel" column="gathering_channel_id"/>
+    <result property="userAccountId" column="user_account_id"/>
+    <result property="bankTotalAmount" column="bank_total_amount"/>
+    <result property="bankReflect" column="bank_reflect"/>
+    <result property="cardUse" column="card_use"/>
+    <result property="totalTradeAmount" column="total_trade_amount"/>
+    <result property="totalPaidOrderNum" column="today_paid_order_num"/>
+    <result property="totalOrderNum" column="today_order_num"/>
+    <result property="totalSuccessRate" column="total_success_rate"/>
+    <result property="todayTradeAmount" column="total_trade_amount"/>
+    <result property="todayPaidOrderNum" column="total_paid_order_num"/>
+    <result property="todayOrderNum" column="total_order_num"/>
+    <result property="todaySuccessRate" column="today_success_rate"/>
+    <result property="bankCode" column="bank_code"/>
+    <result property="bankAddress" column="bank_address"/>
+    <result property="bankUsername" column="bank_username"/>
+  </resultMap>
+
+  <sql id="select_v_gathering_code_usage">
+    select total_success_rate,
+           today_success_rate,
+           id,
+           create_time,
+           gathering_amount,
+           gathering_channel_code,
+           payee,
+           state,
+           user_account_id,
+           storage_id,
+           fixed_gathering_amount,
+           gathering_channel_id,
+           in_use,
+           initiate_audit_time,
+           audit_type,
+           total_trade_amount,
+           total_paid_order_num,
+           total_order_num,
+           today_trade_amount,
+           today_paid_order_num,
+           today_order_num,
+           bank_code,
+           bank_address,
+           bank_username,
+           bank_total_amount,
+           bank_reflect,
+           card_use
+    from v_gathering_code_usage
+  </sql>
+
+  <select id="selectGatheringCodeUsageByPage" parameterType="com.ruoyi.system.vo.GatheringCodeQueryCondParam"
+    resultMap="v_gathering_code_usage_resp">
+    <include refid="select_v_gathering_code_usage"/>
+    <where>
+      <if test="cardUse != null and cardUse != ''">
+        AND `card_use` = #{cardUse}
+      </if>
+      <if test="inUse != null and inUse != ''">
+        AND `in_use` = #{inUse}
+      </if>
+      <if test="payee != null and payee != ''">
+        AND payee = #{payee}
+      </if>
+      <if test="bankCode != null and bankCode != ''">
+        AND bank_code = #{bankCode}
+      </if>
+    </where>
+    order by create_time desc
+  </select>
+
+
+</mapper> 

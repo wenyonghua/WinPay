@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+  <th:block th:include="include :: header('收款码列表')" />
+</head>
+<body class="gray-bg">
+<div class="container-div">
+  <div class="row">
+    <div class="col-sm-12 search-collapse">
+      <form id="post-form">
+        <div class="select-list">
+          <ul>
+            <li>
+              卡用途：<select name="cardUse" th:with="type=${@dict.getType('card_use')}">
+              <option value="">所有</option>
+              <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+            </select>
+            </li>
+            <li>
+              卡状态：<select name="inUse" th:with="type=${@dict.getType('card_in_use')}">
+              <option value="">所有</option>
+              <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+            </select>
+            </li>
+            <li>
+              收款人：<input type="text" name="payee"/>
+            </li>
+            <li>
+              银行卡号：<input type="text" name="bankCode"/>
+            </li>
+
+            <li>
+              <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+              <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+            </li>
+          </ul>
+        </div>
+      </form>
+    </div>
+
+    <div class="btn-group-sm" id="toolbar" role="group">
+      <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:post:add">
+        <i class="fa fa-plus"></i> 新增
+      </a>
+      <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:post:edit">
+        <i class="fa fa-edit"></i> 修改
+      </a>
+      <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"
+         shiro:hasPermission="system:post:remove">
+        <i class="fa fa-remove"></i> 删除
+      </a>
+      <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:post:export">
+        <i class="fa fa-download"></i> 导出
+      </a>
+    </div>
+
+    <div class="col-sm-12 select-table table-striped">
+      <table id="bootstrap-table"></table>
+    </div>
+  </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+  var editFlag = [[${@permission.hasPermi('businessMng:gatheringCode:edit')}]];
+  var removeFlag = [[${@permission.hasPermi('businessMng:gatheringCode:remove')}]];
+  var inUse = [[${@dict.getType('card_in_use')}]];
+  var cardUse = [[${@dict.getType('card_use')}]];
+  var gatheringChannel = [[${@dict.getType('gathering_channel')}]];
+  var prefix = ctx + "businessMng/gatheringCode";
+  $(function () {
+    var options = {
+      url: prefix + "/list",
+      createUrl: prefix + "/add",
+      updateUrl: prefix + "/edit/{id}",
+      removeUrl: prefix + "/remove",
+      exportUrl: prefix + "/export",
+      modalName: "收款码",
+      columns: [{
+        checkbox: true
+      },
+        {
+          field: 'id',
+          title: '编号',
+          visible:false
+
+
+        },
+        {
+          field: 'gatheringChannelName',
+          title: '通道',
+          align: 'center',
+          formatter: function (value, row, index) {
+            return $.table.selectDictLabel(gatheringChannel, value);
+          }
+        },
+        {
+          field: 'inUseName',
+          title: '卡状态',
+          align: 'center',
+          formatter: function (value, row, index) {
+            return $.table.selectDictLabel(inUse, value);
+          }
+        },
+        {
+          field: 'bankUsername',
+          title: '收款人',
+        },
+        {
+          field: 'bankCode',
+          title: '银行卡号',
+        },
+        {
+          field: 'bankAddress',
+          title: '银行名称',
+        },
+        {
+          field: 'cardUse',
+          title: '卡用途',
+          align: 'center',
+          formatter: function (value, row, index) {
+            return $.table.selectDictLabel(cardUse, value);
+          }
+        },
+        {
+          field: 'bankTotalAmountView',
+          title: '银行卡总余额'
+        },
+        {
+          field: 'bankReflect',
+          title: '银行卡提现额度限制'
+        },
+        {
+          field: 'createTime',
+          title: '创建时间',
+        },
+        {
+          title: '今日收款金额/收款次数/接单次数/成功率',
+          formatter : function(value, row, index, field) {
+            return row.todayTradeAmount + 'VND'+ '/' + row.todayPaidOrderNum + '次' + '/' + row.todayOrderNum + '次' + '/' + row.todaySuccessRate + '%';
+          }
+        },
+        {
+          title: '操作',
+          align: 'center',
+          formatter: function (value, row, index) {
+            var actions = [];
+            actions.push('<a class="btn btn-success btn-xs ' + editFlag
+                + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.postId
+                + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+            actions.push('<a class="btn btn-danger btn-xs ' + removeFlag
+                + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.postId
+                + '\')"><i class="fa fa-remove"></i>删除</a>');
+            return actions.join('');
+          }
+        }]
+    };
+    $.table.init(options);
+  });
+</script>
+</body>
+</html>
