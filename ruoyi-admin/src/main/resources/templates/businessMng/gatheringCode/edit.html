@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('修改收款码')" />
+	<th:block th:include="include :: select2-css" />
+</head>
+<body>
+<div class="main-content">
+		<form class="form-horizontal" id="form-gatheringCode-edit" th:object="${gatheringCode}">
+				<input id="id" name="id" type="hidden" th:field="*{id}"/>
+		<h4 class="form-header h4">基本信息</h4>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="col-sm-4 control-label is-required">收款通道：</label>
+					<div class="col-sm-8">
+						<select name="gatheringChannelId" class="form-control m-b" th:with="type=${@dict.getType('gathering_channel')}">
+							<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{gatheringChannelId}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="col-sm-4 control-label is-required">收款人：</label>
+					<div class="col-sm-8">
+						<div class="input-group">
+							<input id="payee" name="payee" placeholder="收款人" class="form-control" type="text" maxlength="128" th:field="*{payee}" required>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="col-sm-4 control-label is-required">银行卡号：</label>
+					<div class="col-sm-8">
+						<div class="input-group">
+							<input id="bankCode" name="bankCode" placeholder="银行卡号" class="form-control" type="text" maxlength="128" th:field="*{bankCode}" required>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="col-sm-4 control-label is-required">银行开户行(银行名称)：</label>
+					<div class="col-sm-8">
+						<div class="input-group">
+							<input id="bankAddress" name="bankAddress" placeholder="银行开户行(银行名称)" class="form-control" type="text" maxlength="128" th:field="*{bankAddress}" required>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="col-sm-4 control-label is-required">卡户主：</label>
+					<div class="col-sm-8">
+						<input id="bankUsername" name="bankUsername" placeholder="卡户主" class="form-control" type="text" maxlength="30" th:field="*{bankUsername}" required>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="col-sm-4 control-label is-required">银行卡提现额度限制：</label>
+					<div class="col-sm-8">
+						<input id="bankReflect" name="bankReflect" placeholder="银行卡提现额度限制" class="form-control" type="text" maxlength="128" th:field="*{bankReflect}" required>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="col-sm-4 control-label is-required">银行卡用途：</label>
+					<div class="col-sm-8">
+						<select name="cardUse" class="form-control m-b" th:with="type=${@dict.getType('card_use')}">
+							<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{cardUse}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="col-sm-4 control-label is-required">银行卡状态：</label>
+					<div class="col-sm-8">
+						<select name="inUse" class="form-control m-b" th:with="type=${@dict.getType('card_in_use')}">
+							<option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{inUse}"></option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="col-sm-4 control-label is-required">银行卡总余额：</label>
+					<div class="col-sm-8">
+						<input id="bankTotalAmount" name="bankTotalAmount" placeholder="银行卡总余额" class="form-control" type="text" maxlength="128"  th:field="*{bankTotalAmount}" required>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: select2-js" />
+<script>
+	var prefix = ctx + "businessMng/gatheringCode";
+
+
+	function submitHandler() {
+		if ($.validate.form()) {
+			$.operate.save(prefix + "/update", $('#form-gatheringCode-edit').serialize());
+		}
+	}
+
+</script>
+</body>
+</html>

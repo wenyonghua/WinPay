@@ -39,19 +39,19 @@
     </div>
 
     <div class="btn-group-sm" id="toolbar" role="group">
-      <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:post:add">
+      <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="businessMng:gatheringCode:add">
         <i class="fa fa-plus"></i> 新增
       </a>
-      <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:post:edit">
+      <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="businessMng:gatheringCode:edit">
         <i class="fa fa-edit"></i> 修改
       </a>
-      <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"
-         shiro:hasPermission="system:post:remove">
-        <i class="fa fa-remove"></i> 删除
-      </a>
-      <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:post:export">
-        <i class="fa fa-download"></i> 导出
-      </a>
+<!--      <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"-->
+<!--         shiro:hasPermission="system:post:remove">-->
+<!--        <i class="fa fa-remove"></i> 删除-->
+<!--      </a>-->
+<!--      <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:post:export">-->
+<!--        <i class="fa fa-download"></i> 导出-->
+<!--      </a>-->
     </div>
 
     <div class="col-sm-12 select-table table-striped">
@@ -63,17 +63,20 @@
 <script th:inline="javascript">
   var editFlag = [[${@permission.hasPermi('businessMng:gatheringCode:edit')}]];
   var removeFlag = [[${@permission.hasPermi('businessMng:gatheringCode:remove')}]];
+  var detailFlag = [[${@permission.hasPermi('businessMng:gatheringCode:detail')}]];
   var inUse = [[${@dict.getType('card_in_use')}]];
   var cardUse = [[${@dict.getType('card_use')}]];
   var gatheringChannel = [[${@dict.getType('gathering_channel')}]];
   var prefix = ctx + "businessMng/gatheringCode";
+  var currency = '[(${currency})]'
   $(function () {
     var options = {
       url: prefix + "/list",
       createUrl: prefix + "/add",
       updateUrl: prefix + "/edit/{id}",
-      removeUrl: prefix + "/remove",
-      exportUrl: prefix + "/export",
+      removeUrl: prefix + "/remove/{id}",
+      detailUrl: prefix + "/detail/{id}",
+      // exportUrl: prefix + "/export",
       modalName: "收款码",
       columns: [{
         checkbox: true
@@ -81,7 +84,7 @@
         {
           field: 'id',
           title: '编号',
-          visible:false
+          visible:true
 
 
         },
@@ -94,15 +97,19 @@
           }
         },
         {
+          visible: editFlag == 'hidden' ? false : true,
           field: 'inUseName',
           title: '卡状态',
           align: 'center',
           formatter: function (value, row, index) {
             return $.table.selectDictLabel(inUse, value);
-          }
+          },
+          // formatter: function (value, row, index) {
+          //   return statusTools(row);
+          // }
         },
         {
-          field: 'bankUsername',
+          field: 'payee',
           title: '收款人',
         },
         {
@@ -126,7 +133,7 @@
           title: '银行卡总余额'
         },
         {
-          field: 'bankReflect',
+          field: 'bankReflectView',
           title: '银行卡提现额度限制'
         },
         {
@@ -136,7 +143,19 @@
         {
           title: '今日收款金额/收款次数/接单次数/成功率',
           formatter : function(value, row, index, field) {
-            return row.todayTradeAmount + 'VND'+ '/' + row.todayPaidOrderNum + '次' + '/' + row.todayOrderNum + '次' + '/' + row.todaySuccessRate + '%';
+            return row.todayTradeAmount + currency + '/' + row.todayPaidOrderNum + '次' + '/' + row.todayOrderNum + '次' + '/' + row.todaySuccessRate + '%';
+          }
+        },
+        {
+          visible: editFlag == 'hidden' ? false : true,
+          field: 'inUseName',
+          title: '卡开关',
+          align: 'center',
+          // formatter: function (value, row, index) {
+          //   return $.table.selectDictLabel(inUse, value);
+          // },
+          formatter: function (value, row, index) {
+            return statusTools(row);
           }
         },
         {
@@ -144,11 +163,14 @@
           align: 'center',
           formatter: function (value, row, index) {
             var actions = [];
+            actions.push('<a class="btn btn-success btn-xs ' + detailFlag
+                + '" href="javascript:void(0)" onclick="$.operate.detail(\'' + row.id
+                + '\')"><i class="fa fa-search"></i>详情</a> ');
             actions.push('<a class="btn btn-success btn-xs ' + editFlag
-                + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.postId
+                + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.id
                 + '\')"><i class="fa fa-edit"></i>编辑</a> ');
             actions.push('<a class="btn btn-danger btn-xs ' + removeFlag
-                + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.postId
+                + '" href="javascript:void(0)" onclick="$.operate.remove_edit(\'' + row.id
                 + '\')"><i class="fa fa-remove"></i>删除</a>');
             return actions.join('');
           }
@@ -156,6 +178,30 @@
     };
     $.table.init(options);
   });
+
+
+  /* 卡状态显示 */
+  function statusTools(row) {
+    if (row.inUse == false) {
+      return '<i class=\"fa fa-toggle-off text-info fa-2x\" onclick="enable(\'' + row.id + '\')"></i> ';
+    } else {
+      return '<i class=\"fa fa-toggle-on text-info fa-2x\" onclick="disable(\'' + row.id + '\')"></i> ';
+    }
+  }
+
+  /* 停用 */
+  function disable(id) {
+    $.modal.confirm("确认要停用吗？", function() {
+      $.operate.post(prefix + "/changeStatus", { "id": id, "inUse": 0 });
+    })
+  }
+
+  /* 启用 */
+  function enable(id) {
+    $.modal.confirm("确认要启用吗？", function() {
+      $.operate.post(prefix + "/changeStatus", { "id": id, "inUse": 1 });
+    })
+  }
 </script>
 </body>
 </html>

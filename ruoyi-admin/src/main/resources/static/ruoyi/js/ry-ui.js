@@ -1090,6 +1090,23 @@ var table = {
                     }
                 });
             },
+
+            // 删除编辑修改信息
+            remove_edit: function(id) {
+                table.set();
+                // if($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
+                //     var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
+                //     if ($.common.isEmpty(row)) {
+                //         $.modal.alertWarning("请至少选择一条记录");
+                //         return;
+                //     }
+                //     var url = table.options.removeUrl.replace("{id}", row[table.options.uniqueId]);
+                //     $.modal.open("删除确认" + table.options.modalName, url);
+                // } else {
+                console.log(table.options.removeUrl.replace("{id}", id))
+               $.modal.open("删除" + table.options.modalName, table.options.removeUrl.replace("{id}", id),'800', '300');
+                // }
+            },
             // 批量删除信息
             removeAll: function() {
                 table.set();

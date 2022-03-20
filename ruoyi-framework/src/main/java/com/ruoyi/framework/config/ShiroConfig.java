@@ -129,6 +129,17 @@ public class ShiroConfig
     @Value("${shiro.rememberMe.enabled: false}")
     private boolean rememberMe;
 
+
+    /**
+     * 币种
+     */
+    @Value("${shiro.currency}")
+    private String currency;
+
+    public String getCurrency() {
+        return currency;
+    }
+
     /**
      * 缓存管理器 使用Ehcache实现
      */

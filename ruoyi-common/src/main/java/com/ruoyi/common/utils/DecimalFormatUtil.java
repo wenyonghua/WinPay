@@ -1,4 +1,4 @@
-package com.ruoyi.system.utils;
+package com.ruoyi.common.utils;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;

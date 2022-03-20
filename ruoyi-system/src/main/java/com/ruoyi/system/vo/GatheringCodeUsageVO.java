@@ -2,7 +2,7 @@ package com.ruoyi.system.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.system.domain.GatheringCodeUsage;
-import com.ruoyi.system.utils.DecimalFormatUtil;
+import com.ruoyi.common.utils.DecimalFormatUtil;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -87,6 +87,11 @@ public class GatheringCodeUsageVO {
   private Double bankReflect;
 
   /**
+   * 银行卡总额度限制 这个界面展示
+   */
+  private String bankReflectView;
+
+  /**
    * 创建时间
    */
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
@@ -146,6 +151,20 @@ public class GatheringCodeUsageVO {
   private String cardUseName;
   private String inUser;
 
+  public String getBankReflectView() {
+    return bankReflectView;
+  }
+
+  /**
+   * Sets the bankReflectView.
+   *
+   * <p>You can use getBankReflectView() to get the value of bankReflectView</p>
+   *
+   * @param bankReflectView bankReflectView
+   */
+  public void setBankReflectView(String bankReflectView) {
+    this.bankReflectView = bankReflectView;
+  }
 
   public String getId() {
     return id;
@@ -679,6 +698,7 @@ public class GatheringCodeUsageVO {
     vo.setInUser(inuser);
     String vv= DecimalFormatUtil.formatString(new BigDecimal(vo.getBankTotalAmount()), null);
     vo.setBankTotalAmountView(vv);//银行卡总余额使用界面展示吧金额格式化了 "#,###.00";
+    vo.setBankReflectView(DecimalFormatUtil.formatString(new BigDecimal(vo.getBankReflect()), null));
     return vo;
   }
 }

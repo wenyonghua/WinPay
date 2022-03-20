@@ -34,6 +34,21 @@
     <result property="bankUsername" column="bank_username"/>
   </resultMap>
 
+  <resultMap type="com.ruoyi.system.domain.GatheringCode" id="gathering_code">
+    <result property="id" column="id"/>
+    <result property="createTime" column="createTime"/>
+    <result property="payee" column="payee"/>
+    <result property="gatheringChannelId" column="gathering_channel_id"/>
+    <result property="inUse" column="in_use"/>
+    <result property="bankCode" column="bank_code"/>
+    <result property="bankAddress" column="bank_address"/>
+    <result property="bankUsername" column="bank_username"/>
+    <result property="bankTotalAmount" column="bank_total_amount"/>
+    <result property="bankReflect" column="bank_reflect"/>
+    <result property="cardUse" column="card_use"/>
+    <result property="bankUsername" column="bank_username"/>
+  </resultMap>
+
   <sql id="select_v_gathering_code_usage">
     select total_success_rate,
            today_success_rate,
@@ -85,5 +100,92 @@
     order by create_time desc
   </select>
 
+
+  <select id="countBankCode" resultType="int">
+    select count(1) from gathering_code
+    where bank_code = #{bankCode}
+    <if test="id != null and id != ''">
+      AND id != #{id}
+    </if>
+
+  </select>
+
+  <insert id="insertGatheringCode" parameterType="com.ruoyi.system.domain.GatheringCode">
+    insert into gathering_code(
+    id,create_time,payee,gathering_channel_id,in_use,bank_code,bank_address,bank_username,bank_total_amount,bank_reflect,card_use
+    )values(
+    #{id},
+    #{createTime},
+    #{payee},
+    #{gatheringChannelId},
+    #{inUse},
+    #{bankCode},
+    #{bankAddress},
+    #{bankUsername},
+    #{bankTotalAmount},
+    #{bankReflect},
+    #{cardUse}
+    )
+  </insert>
+
+  <select id="selectGatheringCodeById" resultMap="gathering_code">
+    select  id,
+           create_time,
+           payee,
+           state,
+           gathering_channel_id,
+           in_use,
+           bank_code,
+           bank_address,
+           bank_username,
+           bank_total_amount,
+           bank_reflect,
+           card_use from gathering_code
+    where id=#{id}
+  </select>
+
+  <select id="selectGatheringCodeByIdForUpdate" resultMap="gathering_code">
+    select  id,
+            create_time,
+            payee,
+            gathering_channel_id,
+            in_use,
+            bank_code,
+            bank_address,
+            bank_username,
+            bank_total_amount,
+            bank_reflect,
+            card_use from gathering_code
+    where id=#{id}
+    for update
+  </select>
+
+
+  <update id="updateGatheringCode" parameterType="com.ruoyi.system.domain.GatheringCode">
+    update gathering_code
+    set
+        payee = #{payee},
+        gathering_channel_id = #{gatheringChannelId},
+        in_use = #{inUse},
+        bank_code = #{bankCode},
+        bank_address = #{bankAddress},
+        bank_username = #{bankUsername},
+        bank_total_amount = #{bankTotalAmount},
+        bank_reflect = #{bankReflect},
+        card_use = #{cardUse}
+    where id = #{id}
+  </update>
+
+  <delete id="deleteGatheringCodeById">
+    delete from gathering_code where id = #{id}
+  </delete>
+
+
+  <update id="changeStatus" parameterType="com.ruoyi.system.domain.GatheringCode">
+    update gathering_code
+    set
+      in_use = #{inUse}
+    where id = #{id}
+  </update>
 
 </mapper> 
