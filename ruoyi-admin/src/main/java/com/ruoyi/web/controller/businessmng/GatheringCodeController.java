@@ -161,7 +161,7 @@ public class GatheringCodeController extends BaseController {
    * 修改收款码
    */
   @RequiresPermissions("businessMng:gatheringCode:remove")
-  @Log(title = "删除收款码管理", businessType = BusinessType.DELETE)
+  @Log(title = "收款码管理", businessType = BusinessType.DELETE)
   @PostMapping("/del")
   @ResponseBody
   public AjaxResult delete(@Validated GatheringCodeParam gatheringCodeParam) {
