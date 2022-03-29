@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MerchantMapper">
+
+
+  <resultMap type="com.ruoyi.system.domain.Merchant" id="merchant">
+    <result property="id" column="id"/>
+    <result property="createTime" column="create_time"/>
+    <result property="secretKey" column="secret_key"/>
+    <result property="version" column="version"/>
+    <result property="merchantNum" column="merchant_num"/>
+    <result property="loginPwd" column="login_pwd"/>
+    <result property="userName" column="user_name"/>
+    <result property="latelyLoginTime" column="lately_login_time"/>
+    <result property="state" column="state"/>
+    <result property="merchantName" column="merchant_name"/>
+    <result property="deletedFlag" column="deleted_flag"/>
+    <result property="withdrawableAmount" column="withdrawable_amount"/>
+    <result property="moneyPwd" column="money_pwd"/>
+    <result property="notifyUrl" column="notify_url"/>
+    <result property="returnUrl" column="return_url"/>
+    <result property="ipWhitelist" column="ip_whitelist"/>
+  </resultMap>
+
+  <sql id="select_merchant">
+    select id,
+           create_time,
+           secret_key,
+           version,
+           merchant_num,
+           login_pwd,
+           user_name,
+           lately_login_time,
+           state,
+           merchant_name,
+           deleted_flag,
+           withdrawable_amount,
+           money_pwd,
+           notify_url,
+           return_url,
+           ip_whitelist
+    from merchant
+  </sql>
+
+  <select id="selectMerchantByPage"
+    resultMap="merchant">
+    <include refid="select_merchant"/>
+
+    <where>
+      deleted_flag = false
+      <if test="merchantName != null and merchantName != ''">
+        AND merchant_name LIKE CONCAT('%',#{merchantName},'%')
+      </if>
+    </where>
+    order by create_time desc
+  </select>
+
+  <select id="countUserName" resultType="int">
+    select count(1) from merchant
+    where user_name = #{userName}
+    <if test="id != null and id != ''">
+      AND id != #{id}
+    </if>
+  </select>
+
+
+  <select id="countMerchantNum" resultType="int">
+    select count(1) from merchant
+    where merchant_num = #{merchantNum}
+    <if test="id != null and id != ''">
+      AND id != #{id}
+    </if>
+  </select>
+
+  <select id="countMerchantName" resultType="int">
+    select count(1) from merchant
+    where merchant_name = #{merchantName}
+    <if test="id != null and id != ''">
+      AND id != #{id}
+    </if>
+  </select>
+
+
+  <insert id="insertMerchant" parameterType="com.ruoyi.system.domain.Merchant">
+    insert into merchant(id,
+                         create_time,
+                         secret_key,
+                         merchant_num,
+                         login_pwd,
+                         user_name,
+                         lately_login_time,
+                         state,
+                         merchant_name,
+                         deleted_flag,
+                         withdrawable_amount,
+                         money_pwd,
+                         notify_url,
+                         return_url,
+                         ip_whitelist)
+    values (#{id},
+            #{createTime},
+            #{secretKey},
+            #{merchantNum},
+            #{loginPwd},
+            #{userName},
+            #{latelyLoginTime},
+            #{state},
+            #{merchantName},
+            #{deletedFlag},
+            #{withdrawableAmount},
+            #{moneyPwd},
+            #{notifyUrl},
+            #{returnUrl},
+            #{ipWhitelist})
+  </insert>
+
+  <update id="delMerchant" parameterType="com.ruoyi.system.domain.Merchant">
+    update merchant
+    set deleted_flag = #{deletedFlag}
+    where id = #{id}
+  </update>
+
+
+  <select id="selectMerchantById" resultMap="merchant">
+    select id,
+           create_time,
+           secret_key,
+           version,
+           merchant_num,
+           login_pwd,
+           user_name,
+           lately_login_time,
+           state,
+           merchant_name,
+           deleted_flag,
+           withdrawable_amount,
+           money_pwd,
+           notify_url,
+           return_url,
+           ip_whitelist
+    from merchant
+    where id = #{id}
+  </select>
+
+  <select id="selectMerchantByIdForUpdate" resultMap="merchant">
+    select id,
+           create_time,
+           secret_key,
+           version,
+           merchant_num,
+           login_pwd,
+           user_name,
+           lately_login_time,
+           state,
+           merchant_name,
+           deleted_flag,
+           withdrawable_amount,
+           money_pwd,
+           notify_url,
+           return_url,
+           ip_whitelist
+    from merchant
+    where id = #{id} for update
+  </select>
+
+
+  <update id="updateMerchant" parameterType="com.ruoyi.system.domain.Merchant">
+    update merchant
+    set
+      user_name = #{userName},
+      merchant_num = #{merchantNum},
+      merchant_name = #{merchantName},
+      state = #{state},
+      secret_key = #{secretKey},
+      withdrawable_amount = #{withdrawableAmount},
+      notify_url = #{notifyUrl},
+      return_url = #{returnUrl},
+      ip_whitelist = #{ipWhitelist}
+    where id = #{id}
+  </update>
+
+  <!--<delete id="deleteGatheringCodeById">-->
+  <!--  delete from gathering_code where id = #{id}-->
+  <!--</delete>-->
+
+
+  <!--<update id="changeStatus" parameterType="com.ruoyi.system.domain.GatheringCode">-->
+  <!--  update gathering_code-->
+  <!--  set-->
+  <!--    in_use = #{inUse}-->
+  <!--  where id = #{id}-->
+  <!--</update>-->
+
+</mapper> 

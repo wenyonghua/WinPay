@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('修改商户')" />
+	<th:block th:include="include :: select2-css" />
+</head>
+<body>
+<div class="main-content">
+	<form id="form-merchant-edit" class="form-horizontal"  th:object="${merchant}">
+		<input id="id" name="id" type="hidden" th:field="*{id}"/>
+		<h4 class="form-header h4">基本信息</h4>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="col-sm-4 control-label is-required">用户名：</label>
+					<div class="col-sm-8">
+						<input th:field="*{userName}" id="userName" name="userName" placeholder="用户名" class="form-control" type="text" maxlength="128" required>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="col-sm-4 control-label is-required">商户余额：</label>
+					<div class="col-sm-8">
+						<div class="input-group">
+							<input th:field="*{withdrawableAmount}" id="withdrawableAmount" name="withdrawableAmount" placeholder="商户余额" class="form-control" type="text" maxlength="128" required>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="col-sm-4 control-label is-required">商户号：</label>
+					<div class="col-sm-8">
+						<div class="input-group">
+							<input th:field="*{merchantNum}" id="merchantNum" name="merchantNum" placeholder="商户号" class="form-control" type="text" maxlength="128" required>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="col-sm-4 control-label is-required">商户名称：</label>
+					<div class="col-sm-8">
+						<div class="input-group">
+							<input th:field="*{merchantName}" id="merchantName" name="merchantName" placeholder="商户名称" class="form-control" type="text" maxlength="128" required>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="form-group">
+					<label class="col-xs-2 control-label is-required" >状态：</label>
+					<div class="col-xs-10">
+						<div class="radio-box" th:each="dict : ${@dict.getType('merchant_status')}">
+							<input type="radio" th:id="${dict.dictCode}" name="state" th:value="${dict.dictValue}" th:field="*{state}">
+							<label th:for="${dict.dictCode}" th:text="${dict.dictLabel}"></label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="form-group">
+					<label class="col-xs-2 control-label is-required">接入密钥：</label>
+					<div class="col-xs-10">
+						<textarea th:field="*{secretKey}" id="secretKey" name="secretKey" maxlength="500" class="form-control" rows="3" required></textarea>
+						<button type="button" class="btn btn-primary btn-sm"th:onclick="'javascript:generateSecretKey()'">生成密钥</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="form-group">
+					<label class="col-xs-2 control-label">异步通知地址：</label>
+					<div class="col-xs-10">
+						<textarea th:field="*{notifyUrl}" name="notifyUrl" maxlength="500" class="form-control" rows="3"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="form-group">
+					<label class="col-xs-2 control-label">同步通知地址：</label>
+					<div class="col-xs-10">
+						<textarea th:field="*{returnUrl}" name="returnUrl" maxlength="500" class="form-control" rows="3"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="form-group">
+					<label class="col-xs-2 control-label">IP白名单列表：</label>
+					<div class="col-xs-10">
+						<textarea th:field="*{ipWhitelist}" name="ipWhitelist" maxlength="500" class="form-control" rows="3"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: select2-js" />
+<script>
+	var prefix = ctx + "businessMng/merchant";
+
+
+	function submitHandler() {
+		if ($.validate.form()) {
+			$.operate.save(prefix + "/update", $('#form-merchant-edit').serialize());
+		}
+	}
+
+	function generateSecretKey() {
+		$.ajax({
+			type: "GET",
+			url: prefix + "/generateSecretKey",
+			success: function(data) {
+				$("#secretKey").val(data.secretKey);
+			}
+		});
+	}
+
+</script>
+</body>
+</html>
