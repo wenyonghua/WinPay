@@ -64,18 +64,12 @@ public class GatheringCodeController extends BaseController {
   }
 
 
-  /**
-   * 新增收款码跳转
-   */
   @GetMapping("/add")
   public String add() {
     return prefix + "/add";
   }
 
-  /**
-   * 新增收款码
-   */
-  @RequiresPermissions("businessMng:gatheringCode:edit")
+  @RequiresPermissions("businessMng:gatheringCode:add")
   @Log(title = "收款码管理", businessType = BusinessType.INSERT)
   @PostMapping("/add")
   @ResponseBody
@@ -84,9 +78,6 @@ public class GatheringCodeController extends BaseController {
     return toAjax(gatheringCodeService.add(gatheringCodeParam));
   }
 
-  /**
-   * 修改收款码
-   */
   @RequiresPermissions("businessMng:gatheringCode:edit")
   @GetMapping("/edit/{id}")
   public String edit(@PathVariable("id") String id, ModelMap mmap) {
@@ -98,10 +89,7 @@ public class GatheringCodeController extends BaseController {
     return prefix + "/edit";
   }
 
-  /**
-   * 修改收款码
-   */
-  @RequiresPermissions("businessMng:gatheringCode:add")
+  @RequiresPermissions("businessMng:gatheringCode:edit")
   @Log(title = "收款码管理", businessType = BusinessType.UPDATE)
   @PostMapping("/update")
   @ResponseBody
@@ -142,9 +130,6 @@ public class GatheringCodeController extends BaseController {
   }
 
 
-  /**
-   * 删除收款码
-   */
   @RequiresPermissions("businessMng:gatheringCode:remove")
   @GetMapping("/remove/{id}")
   public String remove(@PathVariable("id") String id, ModelMap mmap) {
@@ -157,9 +142,6 @@ public class GatheringCodeController extends BaseController {
   }
 
 
-  /**
-   * 修改收款码
-   */
   @RequiresPermissions("businessMng:gatheringCode:remove")
   @Log(title = "收款码管理", businessType = BusinessType.DELETE)
   @PostMapping("/del")
@@ -169,9 +151,6 @@ public class GatheringCodeController extends BaseController {
   }
 
 
-  /**
-   * 查看收款码详情
-   */
   @RequiresPermissions("businessMng:gatheringCode:detail")
   @GetMapping("/detail/{id}")
   public String detail(@PathVariable("id") String id, ModelMap mmap) {
@@ -184,9 +163,6 @@ public class GatheringCodeController extends BaseController {
   }
 
 
-  /**
-   * 收款卡状态管理
-   */
   @Log(title = "收款卡管理", businessType = BusinessType.UPDATE)
   @RequiresPermissions("businessMng:gatheringCode:edit")
   @PostMapping("/changeStatus")
