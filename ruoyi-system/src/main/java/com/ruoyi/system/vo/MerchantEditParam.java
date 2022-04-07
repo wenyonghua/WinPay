@@ -18,6 +18,25 @@ public class MerchantEditParam extends MerchantParam {
    */
   private String withdrawableAmount;
 
+  /**
+   * 资金密码
+   */
+  private String moneyPwd;
+
+  public String getMoneyPwd() {
+    return moneyPwd;
+  }
+
+  /**
+   * Sets the moneyPwd.
+   *
+   * <p>You can use getMoneyPwd() to get the value of moneyPwd</p>
+   *
+   * @param moneyPwd moneyPwd
+   */
+  public void setMoneyPwd(String moneyPwd) {
+    this.moneyPwd = moneyPwd;
+  }
 
   public String getId() {
     return id;

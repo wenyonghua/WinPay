@@ -127,6 +127,22 @@ public class MerchantServiceImpl implements IMerchantService {
     merchant.setIpWhitelist(merchantParam.getIpWhitelist());
     merchant.setWithdrawableAmount(Double.valueOf(merchantParam.getWithdrawableAmount()));
   }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public int updatePwd(MerchantEditParam merchantParam) {
+
+    Merchant merchant = merchantMapper.selectMerchantByIdForUpdate(merchantParam.getId());
+    if (merchant == null) {
+      throw new ServiceException("商户不存在,请刷新页面");
+    }
+
+    merchant.setLoginPwd(new BCryptPasswordEncoder().encode(merchantParam.getLoginPwd()));
+    merchant.setMoneyPwd(new BCryptPasswordEncoder().encode(merchantParam.getMoneyPwd()));
+
+    return merchantMapper.updatePwd(merchant);
+  }
+
   //
   //
   // @Override

@@ -181,6 +181,14 @@
     where id = #{id}
   </update>
 
+  <update id="updatePwd" parameterType="com.ruoyi.system.domain.Merchant">
+    update merchant
+    set
+      login_pwd = #{loginPwd},
+      money_pwd = #{moneyPwd}
+    where id = #{id}
+  </update>
+
   <!--<delete id="deleteGatheringCodeById">-->
   <!--  delete from gathering_code where id = #{id}-->
   <!--</delete>-->

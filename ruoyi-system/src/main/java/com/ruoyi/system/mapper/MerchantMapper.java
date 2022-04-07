@@ -80,6 +80,13 @@ public interface MerchantMapper {
   * @return
   */
   int updateMerchant(Merchant merchant);
+
+  /**
+   *
+   * @param merchant
+   * @return
+   */
+  int updatePwd(Merchant merchant);
   //
   ///**
   // * 删除付款码

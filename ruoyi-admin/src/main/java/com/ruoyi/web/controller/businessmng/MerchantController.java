@@ -113,4 +113,20 @@ public class MerchantController extends BaseController {
     return toAjax(iMerchantService.update(merchantParam));
   }
 
+  @RequiresPermissions("businessMng:merchant:edit")
+  @GetMapping("/resetPwd/{id}")
+  public String resetPwd(@PathVariable("id") String id, ModelMap mmap) {
+    MerchantVo merchant = iMerchantService.queryMerchant(id);
+    mmap.put("merchant", merchant);
+    return prefix + "/resetPwd";
+  }
+
+  @RequiresPermissions("businessMng:merchant:edit")
+  @Log(title = "收款码管理", businessType = BusinessType.UPDATE)
+  @PostMapping("/updatePwd")
+  @ResponseBody
+  public AjaxResult updatePwd(@Validated MerchantEditParam merchantParam) {
+    return toAjax(iMerchantService.updatePwd(merchantParam));
+  }
+
 }

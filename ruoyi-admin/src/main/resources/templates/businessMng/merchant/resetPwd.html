@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+	<th:block th:include="include :: header('修改商户')" />
+	<th:block th:include="include :: select2-css" />
+</head>
+<body>
+<div class="main-content">
+	<form id="form-merchant-resetPwd" class="form-horizontal"  th:object="${merchant}">
+		<input id="id" name="id" type="hidden" th:field="*{id}"/>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="col-sm-4 control-label is-required">用户名：</label>
+					<div class="col-sm-8">
+						<div class="input-group">
+							<input th:field="*{userName}" id="userName" name="userName" class="form-control" type="text" maxlength="128" readonly="true" required>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="col-sm-4 control-label is-required">商户名称：</label>
+					<div class="col-sm-8">
+						<div class="input-group">
+							<input th:field="*{merchantName}" id="merchantName" name="merchantName" placeholder="商户名称" class="form-control" type="text" maxlength="128" readonly="true" required>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="col-sm-4 control-label is-required">登录密码：</label>
+					<div class="col-sm-8">
+						<div class="input-group">
+							<input  id="loginPwd" name="loginPwd" placeholder="登录密码" class="form-control" type="text" maxlength="128" required>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label class="col-sm-4 control-label is-required">商户支付密码：</label>
+					<div class="col-sm-8">
+						<div class="input-group">
+							<input id="moneyPwd" name="moneyPwd" placeholder="商户支付密码"  class="form-control" type="text" maxlength="128" required>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: select2-js" />
+<script>
+	var prefix = ctx + "businessMng/merchant";
+
+
+	function submitHandler() {
+		if ($.validate.form()) {
+			$.operate.save(prefix + "/updatePwd", $('#form-merchant-resetPwd').serialize());
+		}
+	}
+
+</script>
+</body>
+</html>

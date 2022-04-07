@@ -46,6 +46,12 @@ public interface IMerchantService {
    */
   int update(MerchantEditParam merchantParam);
 
+  /**
+   * @param merchantParam
+   * @return
+   */
+  int updatePwd(MerchantEditParam merchantParam);
+
   //
   ///**
   // * 查询收款码详情
