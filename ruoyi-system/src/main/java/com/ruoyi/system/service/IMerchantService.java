@@ -1,6 +1,8 @@
 package com.ruoyi.system.service;
 
+import com.ruoyi.system.domain.GatheringChannelRate;
 import com.ruoyi.system.domain.Merchant;
+import com.ruoyi.system.vo.BatchSettingRateParam;
 import com.ruoyi.system.vo.MerchantEditParam;
 import com.ruoyi.system.vo.MerchantParam;
 import com.ruoyi.system.vo.MerchantVo;
@@ -51,6 +53,19 @@ public interface IMerchantService {
    * @return
    */
   int updatePwd(MerchantEditParam merchantParam);
+
+  /**
+   * @param merchant
+   * @return
+   */
+  List<GatheringChannelRate> editGatheringChannelRate(MerchantVo merchant);
+
+  /**
+   *
+   * @param param
+   * @return
+   */
+  int updateEditGatheringChannelRate(BatchSettingRateParam param);
 
   //
   ///**

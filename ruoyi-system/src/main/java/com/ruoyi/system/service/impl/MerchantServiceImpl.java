@@ -1,13 +1,19 @@
 package com.ruoyi.system.service.impl;
 
 import com.ruoyi.common.exception.ServiceException;
+import com.ruoyi.system.domain.GatheringChannelRate;
 import com.ruoyi.system.domain.Merchant;
+import com.ruoyi.system.mapper.GatheringChannelRateMapper;
 import com.ruoyi.system.mapper.MerchantMapper;
 import com.ruoyi.system.service.IMerchantService;
+import com.ruoyi.system.vo.BatchSettingRateParam;
+import com.ruoyi.system.vo.GatheringChannelRateParam;
 import com.ruoyi.system.vo.MerchantEditParam;
 import com.ruoyi.system.vo.MerchantParam;
 import com.ruoyi.system.vo.MerchantVo;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +33,9 @@ public class MerchantServiceImpl implements IMerchantService {
 
   @Autowired
   MerchantMapper merchantMapper;
+
+  @Autowired
+  GatheringChannelRateMapper gatheringChannelRateMapper;
 
   @Override
   @Transactional(readOnly = true)
@@ -141,6 +150,47 @@ public class MerchantServiceImpl implements IMerchantService {
     merchant.setMoneyPwd(new BCryptPasswordEncoder().encode(merchantParam.getMoneyPwd()));
 
     return merchantMapper.updatePwd(merchant);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<GatheringChannelRate> editGatheringChannelRate(MerchantVo merchant) {
+    if (merchant == null) {
+      throw new ServiceException("商户不存在,请刷新页面");
+    }
+    List<GatheringChannelRate> gatheringChannelRates = gatheringChannelRateMapper.selectByMerchantId(merchant.getId());
+
+    return gatheringChannelRates;
+  }
+
+  @Override
+  @Transactional(rollbackFor = Exception.class)
+  public int updateEditGatheringChannelRate(BatchSettingRateParam param) {
+
+    Merchant merchant = merchantMapper.selectMerchantByIdForUpdate(param.getMerchantId());
+    if (merchant == null) {
+      throw new ServiceException("商户不存在,请刷新页面");
+    }
+
+    if (param.getChannelRates().isEmpty()) {
+      throw new ServiceException("没有可用的接单通道设置");
+    }
+
+    Map<String, String> map = new HashMap();
+    for (GatheringChannelRateParam channelRateParam : param.getChannelRates()) {
+      if (map.get(channelRateParam.getChannelId()) != null) {
+        throw new ServiceException("不能设置重复的接单通道");
+      }
+      map.put(channelRateParam.getChannelId(), channelRateParam.getChannelId());
+    }
+
+    gatheringChannelRateMapper.deleteByMerchantId(param.getMerchantId());
+    for (GatheringChannelRateParam channelRateParam : param.getChannelRates()) {
+      GatheringChannelRate rate = channelRateParam.convertToPo(param.getMerchantId());
+      gatheringChannelRateMapper.insertGatheringChannelRate(rate);
+    }
+
+    return 1;
   }
 
   //

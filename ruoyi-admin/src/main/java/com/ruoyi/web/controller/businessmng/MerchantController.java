@@ -2,13 +2,16 @@ package com.ruoyi.web.controller.businessmng;
 
 import cn.hutool.core.lang.UUID;
 import cn.hutool.crypto.SecureUtil;
+import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.system.domain.GatheringChannelRate;
 import com.ruoyi.system.domain.Merchant;
 import com.ruoyi.system.service.IMerchantService;
+import com.ruoyi.system.vo.BatchSettingRateParam;
 import com.ruoyi.system.vo.MerchantEditParam;
 import com.ruoyi.system.vo.MerchantParam;
 import com.ruoyi.system.vo.MerchantVo;
@@ -105,7 +108,7 @@ public class MerchantController extends BaseController {
   }
 
   @RequiresPermissions("businessMng:merchant:edit")
-  @Log(title = "收款码管理", businessType = BusinessType.UPDATE)
+  @Log(title = "商户管理", businessType = BusinessType.UPDATE)
   @PostMapping("/update")
   @ResponseBody
   public AjaxResult update(@Validated MerchantEditParam merchantParam) {
@@ -122,11 +125,30 @@ public class MerchantController extends BaseController {
   }
 
   @RequiresPermissions("businessMng:merchant:edit")
-  @Log(title = "收款码管理", businessType = BusinessType.UPDATE)
+  @Log(title = "商户管理", businessType = BusinessType.UPDATE)
   @PostMapping("/updatePwd")
   @ResponseBody
   public AjaxResult updatePwd(@Validated MerchantEditParam merchantParam) {
     return toAjax(iMerchantService.updatePwd(merchantParam));
+  }
+
+
+  @RequiresPermissions("businessMng:merchant:edit")
+  @GetMapping("/editGatheringChannelRate/{id}")
+  public String editGatheringChannelRate(@PathVariable("id") String id, ModelMap mmap) {
+    MerchantVo merchant = iMerchantService.queryMerchant(id);
+    List<GatheringChannelRate> gatheringChannelRates = iMerchantService.editGatheringChannelRate(merchant);
+    mmap.put("merchant", merchant);
+    mmap.put("gatheringChannelRates", JSON.toJSON(gatheringChannelRates));
+    return prefix + "/editGatheringChannelRate";
+  }
+
+  @RequiresPermissions("businessMng:merchant:edit")
+  @Log(title = "商户管理", businessType = BusinessType.UPDATE)
+  @PostMapping("/updateEditGatheringChannelRate")
+  @ResponseBody
+  public AjaxResult updateEditGatheringChannelRate(@Validated BatchSettingRateParam param) {
+    return toAjax(iMerchantService.updateEditGatheringChannelRate(param));
   }
 
 }
